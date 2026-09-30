@@ -1,0 +1,28 @@
+# RedBoot — Sample Configuration
+# Copy this file to config/redboot.yaml and customize for your lab.
+
+session:
+  operator: "lab-user"
+  lab_name: "default-lab"
+  output_dir: "output"
+
+scope:
+  targets:
+    - "192.168.56.0/24"     # VirtualBox host-only network
+  excluded:
+    - "192.168.56.1"        # Host machine — do not scan
+  description: "Isolated VirtualBox lab network for RedBoot testing"
+
+modules:
+  reconnaissance:
+    enabled: true
+  system_assessment:
+    enabled: false
+  vulnerability_assessment:
+    enabled: false
+  anonymity:
+    enabled: false
+  forensics:
+    enabled: false
+  evidence:
+    enabled: true           # Evidence collection is always recommended
