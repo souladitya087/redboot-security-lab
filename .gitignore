@@ -1,0 +1,66 @@
+# ============================================================
+# RedBoot .gitignore
+# ============================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+.eggs/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+
+# --- Virtual Environments ---
+venv/
+.env/
+.venv/
+env/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# --- Docker ---
+docker-compose.override.yml
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Evidence & Reports (generated, not committed) ---
+reporting/output/
+evidence_store/
+
+# --- Boot artifacts ---
+boot/output/
+*.iso
+*.img
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Secrets ---
+.env
+*.key
+*.pem

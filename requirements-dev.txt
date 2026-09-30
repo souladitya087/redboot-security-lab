@@ -1,0 +1,8 @@
+# Requirements — RedBoot Development
+# Dev-only dependencies (linting, testing, formatting)
+
+pytest>=7.4
+pytest-cov>=4.1
+black>=23.0
+flake8>=6.1
+mypy>=1.5

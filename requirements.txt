@@ -1,0 +1,12 @@
+# Requirements — RedBoot Core
+# Phase 1: Foundation dependencies
+
+# Configuration
+pyyaml>=6.0
+
+# Reporting (Phase 5, listed early for planning)
+# jinja2>=3.1
+# weasyprint>=60.0
+
+# CLI
+click>=8.1
