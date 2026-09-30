@@ -39,10 +39,20 @@ class TestGetLogger:
         logger = get_logger("test-module")
         assert logger.logger.name == "redboot.test-module"
 
-    def test_logger_includes_session_id(self, capfd):
+    def test_logger_includes_session_id(self):
         """Logger injects session_id into log output."""
-        logger = get_logger("test-module", session_id="session-xyz")
-        logger.info("Hello", extra={"data": {"key": "value"}})
-        captured = capfd.readouterr()
-        parsed = json.loads(captured.out.strip())
-        assert parsed["session_id"] == "session-xyz"
+        import io
+
+        stream = io.StringIO()
+        handler = logging.StreamHandler(stream)
+        handler.setFormatter(StructuredFormatter())
+
+        logger = get_logger("session-test", session_id="session-xyz")
+        logger.logger.addHandler(handler)
+        try:
+            logger.info("Hello", extra={"data": {"key": "value"}})
+            output = stream.getvalue().strip()
+            parsed = json.loads(output)
+            assert parsed["session_id"] == "session-xyz"
+        finally:
+            logger.logger.removeHandler(handler)

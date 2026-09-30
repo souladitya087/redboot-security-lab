@@ -51,9 +51,7 @@ class RedBootLogger(logging.LoggerAdapter):
         logger.info("Scan started", extra={"data": {"target": "192.168.56.0/24"}})
     """
 
-    def process(
-        self, msg: str, kwargs: dict[str, Any]
-    ) -> tuple[str, dict[str, Any]]:
+    def process(self, msg: str, kwargs: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         extra = kwargs.get("extra", {})
         extra["session_id"] = self.extra.get("session_id", "")
         kwargs["extra"] = extra

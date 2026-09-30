@@ -15,7 +15,6 @@ from typing import Any
 
 import yaml
 
-
 # Default configuration file path
 DEFAULT_CONFIG_PATH = Path(__file__).parent.parent.parent / "config" / "redboot.yaml"
 
@@ -69,7 +68,9 @@ class RedBootConfig:
     """
 
     session: SessionConfig = field(default_factory=SessionConfig)
-    scope: ScopeConfig = field(default_factory=lambda: ScopeConfig(targets=["127.0.0.1"]))
+    scope: ScopeConfig = field(
+        default_factory=lambda: ScopeConfig(targets=["127.0.0.1"])
+    )
     modules: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
