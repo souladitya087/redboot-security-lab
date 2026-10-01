@@ -46,7 +46,13 @@ class TestReportingEngine:
                     }
                 ],
             },
-            evidence=[{"evidence_id": "EVD-001", "file_name": "capture.pcap", "file_size": 1024}],
+            evidence=[
+                {
+                    "evidence_id": "EVD-001",
+                    "file_name": "capture.pcap",
+                    "file_size": 1024,
+                }
+            ],
         )
 
         engine = ReportEngine(data)
@@ -86,7 +92,12 @@ class TestReportingEngine:
     def test_from_directory_loader(self, tmp_path: Path):
         recon_file = tmp_path / "recon.json"
         recon_file.write_text(
-            json.dumps({"module": "reconnaissance", "findings": [{"ip": "10.0.0.5", "findings": []}]}),
+            json.dumps(
+                {
+                    "module": "reconnaissance",
+                    "findings": [{"ip": "10.0.0.5", "findings": []}],
+                }
+            ),
             encoding="utf-8",
         )
 

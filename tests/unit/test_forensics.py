@@ -21,7 +21,9 @@ class TestForensicImager:
 
         dest = tmp_path / "output_image.dd"
         imager = ForensicImager()
-        res = imager.acquire_image(source, dest, case_id="CASE-TEST-01", examiner="analyst")
+        res = imager.acquire_image(
+            source, dest, case_id="CASE-TEST-01", examiner="analyst"
+        )
 
         assert res["status"] == "SUCCESS"
         assert res["bytes_acquired"] == len(sample_data)

@@ -102,7 +102,9 @@ class TestEvidenceCollectorAndVerifier:
 
         vaulted_file = Path(meta["vault_path"])
         # Alter the vaulted file contents behind the scenes
-        vaulted_file.write_text("MODIFIED / TAMPERED EVIDENCE CONTENT", encoding="utf-8")
+        vaulted_file.write_text(
+            "MODIFIED / TAMPERED EVIDENCE CONTENT", encoding="utf-8"
+        )
 
         verifier = EvidenceVerifier(vault_dir=vault_dir)
         report = verifier.verify_vault()
