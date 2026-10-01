@@ -42,8 +42,8 @@ class TestSystemAuditor:
         # Mock stat to reflect Unix world-readable permissions (0o644) cross-platform
         original_stat = Path.stat
 
-        def mock_stat(self_path):
-            st = original_stat(self_path)
+        def mock_stat(self_path, *args, **kwargs):
+            st = original_stat(self_path, *args, **kwargs)
             if self_path.name == "shadow":
                 mock = MagicMock(wraps=st)
                 mock.st_mode = stat.S_IFREG | 0o644
@@ -69,8 +69,8 @@ class TestSystemAuditor:
         # Mock stat to reflect SUID bit (0o104755) cross-platform
         original_stat = Path.stat
 
-        def mock_stat(self_path):
-            st = original_stat(self_path)
+        def mock_stat(self_path, *args, **kwargs):
+            st = original_stat(self_path, *args, **kwargs)
             if self_path.name == "find":
                 mock = MagicMock(wraps=st)
                 mock.st_mode = stat.S_IFREG | stat.S_ISUID | 0o755
