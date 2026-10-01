@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ data.title }}</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --critical: #f85149;
+      --high: #d29922;
+      --medium: #e3b341;
+      --low: #3fb950;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 40px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: #ffffff;
+      margin: 0 0 10px 0;
+      font-size: 28px;
+    }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .badge-critical { background-color: rgba(248, 81, 73, 0.2); color: var(--critical); border: 1px solid var(--critical); }
+    .badge-high { background-color: rgba(210, 153, 34, 0.2); color: var(--high); border: 1px solid var(--high); }
+    .badge-medium { background-color: rgba(227, 179, 65, 0.2); color: var(--medium); border: 1px solid var(--medium); }
+    .badge-low { background-color: rgba(63, 185, 80, 0.2); color: var(--low); border: 1px solid var(--low); }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-val {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #ffffff;
+      font-size: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      background: rgba(110, 118, 129, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>{{ data.title }}</h1>
+      <div class="meta-bar">
+        <div>Case: <code>{{ data.case_id }}</code></div>
+        <div>Operator: <code>{{ data.operator }}</code></div>
+        <div>Lab: <strong>{{ data.lab_name }}</strong></div>
+        <div>Generated: {{ data.generated_at }}</div>
+      </div>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val">{{ data.executive_summary.get('overall_posture', 'N/A') }}</div>
+        <div class="stat-label">Security Posture</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">{{ data.executive_summary.get('total_hosts_surveyed', 0) }}</div>
+        <div class="stat-label">Hosts Surveyed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--critical);">{{ data.executive_summary.get('critical_vulnerabilities', 0) }}</div>
+        <div class="stat-label">Critical Issues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--high);">{{ data.executive_summary.get('high_vulnerabilities', 0) }}</div>
+        <div class="stat-label">High Issues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">{{ data.executive_summary.get('total_evidence_collected', 0) }}</div>
+        <div class="stat-label">Evidence Vaulted</div>
+      </div>
+    </div>
+
+    <!-- Reconnaissance Section -->
+    <section>
+      <h2>Network Reconnaissance Findings</h2>
+      {% set recon_findings = data.reconnaissance.get('findings', []) %}
+      {% if recon_findings %}
+      <table>
+        <thead>
+          <tr>
+            <th>Host IP / Target</th>
+            <th>Open Ports</th>
+            <th>Services</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for host in recon_findings %}
+          <tr>
+            <td><code>{{ host.get('ip') or host.get('target') }}</code></td>
+            <td>
+              {% for p in host.get('findings', []) %}
+                <code>{{ p.get('port') }}</code>
+              {% endfor %}
+            </td>
+            <td>
+              {% for p in host.get('findings', []) %}
+                {{ p.get('service') }} ({{ p.get('banner', 'no banner') }})<br>
+              {% endfor %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color: var(--text-muted);">No reconnaissance hosts or services discovered.</p>
+      {% endif %}
+    </section>
+
+    <!-- Vulnerability Section -->
+    <section>
+      <h2>Identified Vulnerabilities</h2>
+      {% set vuln_findings = data.vulnerabilities.get('findings', []) %}
+      {% if vuln_findings %}
+      <table>
+        <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Identifier</th>
+            <th>Target</th>
+            <th>Title & Remediation</th>
+            <th>CVSS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in vuln_findings %}
+          <tr>
+            <td><span class="badge badge-{{ v.get('severity', 'low').lower() }}">{{ v.get('severity') }}</span></td>
+            <td><code>{{ v.get('cve_id') }}</code></td>
+            <td><code>{{ v.get('host') }}:{{ v.get('port') }}</code></td>
+            <td>
+              <strong>{{ v.get('title') }}</strong><br>
+              <span style="font-size: 13px; color: var(--text-muted);">{{ v.get('remediation') }}</span>
+            </td>
+            <td><strong>{{ v.get('cvss_score') }}</strong></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color: var(--text-muted);">No vulnerabilities detected in target scope.</p>
+      {% endif %}
+    </section>
+
+    <!-- Evidence & Custody Section -->
+    <section>
+      <h2>Digital Evidence Vault &amp; Chain of Custody</h2>
+      {% if data.evidence %}
+      <table>
+        <thead>
+          <tr>
+            <th>Evidence ID</th>
+            <th>File Name</th>
+            <th>Size</th>
+            <th>SHA-256 Fingerprint</th>
+            <th>Custodian</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ev in data.evidence %}
+          <tr>
+            <td><code>{{ ev.get('evidence_id') }}</code></td>
+            <td>{{ ev.get('file_name') }}</td>
+            <td>{{ ev.get('file_size') }} bytes</td>
+            <td><code title="{{ ev.get('sha256') }}">{{ ev.get('sha256')[:20] }}...</code></td>
+            <td>{{ ev.get('custodian') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color: var(--text-muted);">No evidence records deposited in vault.</p>
+      {% endif %}
+    </section>
+
+    <footer>
+      RedBoot Academic Security Assessment &amp; Forensic Environment &bull; Authorized Lab Use Only
+    </footer>
+  </div>
+</body>
+</html>

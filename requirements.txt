@@ -4,8 +4,8 @@
 # Configuration
 pyyaml>=6.0
 
-# Reporting (Phase 5, listed early for planning)
-# jinja2>=3.1
+# Reporting
+jinja2>=3.1
 # weasyprint>=60.0
 
 # CLI

@@ -1,14 +1,19 @@
-# RedBoot Reporting Engine
 """
-Professional security assessment and forensic report generation.
+RedBoot Reporting Module
 
-Capabilities:
-    - HTML report generation
-    - PDF report generation (via WeasyPrint)
-    - JSON structured output
-    - Executive summaries
-    - Technical detail sections
-    - Evidence appendices
-
-Uses Jinja2-based templates for consistent formatting.
+Generates professional security assessment and digital forensic reports in
+HTML, Markdown, and JSON formats.
 """
+
+from reporting.engine import ReportData, ReportEngine
+from reporting.formatters.html_formatter import HTMLFormatter
+from reporting.formatters.json_formatter import JSONFormatter
+from reporting.formatters.markdown_formatter import MarkdownFormatter
+
+__all__ = [
+    "ReportEngine",
+    "ReportData",
+    "HTMLFormatter",
+    "MarkdownFormatter",
+    "JSONFormatter",
+]
