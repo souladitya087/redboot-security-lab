@@ -1,13 +1,18 @@
-# RedBoot Forensics Module
 """
-Digital forensic analysis capabilities.
+RedBoot Digital Forensics Module
 
-Capabilities:
-    - Disk imaging (bit-for-bit)
-    - File carving
-    - Timeline analysis
-    - Log correlation
-    - Metadata extraction
-
-Key principle: Read-only access — never modifies source evidence.
+Forensic acquisition, file carving, timeline analysis, and log correlation.
 """
+
+from modules.forensics.carver import FileCarver, FileSignature
+from modules.forensics.imager import ForensicImager
+from modules.forensics.log_analyzer import LogAnalyzer
+from modules.forensics.timeline import TimelineGenerator
+
+__all__ = [
+    "ForensicImager",
+    "FileCarver",
+    "FileSignature",
+    "TimelineGenerator",
+    "LogAnalyzer",
+]
