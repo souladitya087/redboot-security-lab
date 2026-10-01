@@ -1,0 +1,64 @@
+#!/bin/bash
+# ==============================================================================
+# RedBoot Chroot Hook: 01-redboot-setup.hook.chroot
+# Executes inside the chroot during Debian live-build image generation.
+# Configures security controls, user environment, and forensic safeguards.
+# ==============================================================================
+set -e
+
+echo "[+] RedBoot Hook: Configuring live system environment..."
+
+# 1. Create standard redboot user if not present
+if ! id -u redboot >/dev/null 2>&1; then
+    useradd -m -s /bin/bash -G sudo,adm,dialout,plugdev,audio,video redboot
+    echo "redboot:redboot" | chpasswd
+    echo "redboot ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/redboot
+    chmod 0440 /etc/sudoers.d/redboot
+fi
+
+# 2. Forensic Integrity: Disable UDev Automounting & Write Protections
+cat << 'EOF' > /etc/udev/rules.d/99-redboot-noautomount.rules
+# RedBoot forensic protection: Prevent automatic mounting of storage media
+SUBSYSTEM=="block", ENV{UDISKS_IGNORE}="1"
+SUBSYSTEM=="block", ENV{UDISKS_AUTO}="0"
+EOF
+
+# 3. Kernel hardening sysctl settings
+cat << 'EOF' > /etc/sysctl.d/99-redboot-security.conf
+# Disallow core dumps
+fs.suid_dumpable = 0
+# Restrict dmesg access to root
+kernel.dmesg_restrict = 1
+# Maximum ASLR randomization
+kernel.randomize_va_space = 2
+# Disable ICMP redirect acceptance
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+# Ignore ICMP broadcast pings
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+# Enable TCP SYN cookies
+net.ipv4.tcp_syncookies = 1
+EOF
+
+# 4. Create directory structure for RedBoot
+mkdir -p /opt/redboot
+mkdir -p /var/log/redboot
+mkdir -p /var/redboot/evidence
+mkdir -p /var/redboot/reports
+chown -R redboot:redboot /opt/redboot /var/log/redboot /var/redboot
+
+# 5. Setup custom RedBoot MOTD / Welcome banner
+cat << 'EOF' > /etc/motd
+================================================================================
+  ____           _ ____              _     
+ |  _ \ ___   __| | __ )  ___   ___ | |_   RedBoot Security Lab Environment
+ | |_) / _ \ / _` |  _ \ / _ \ / _ \| __|  Version 1.0 (Academic Build)
+ |  _ <  __/| (_| | |_) | (_) | (_) | |_   Debian 12 Live Forensics & Assessment
+ |_| \_\___| \__,_|____/ \___/ \___/ \__|  Authorized Lab Use Only
+================================================================================
+  Type 'redboot' or 'sudo redboot-menu' to access the assessment dashboard.
+  All storage media is write-blocked by default to maintain forensic integrity.
+================================================================================
+EOF
+
+echo "[+] RedBoot Hook completed successfully."

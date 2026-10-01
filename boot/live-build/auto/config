@@ -1,0 +1,24 @@
+#!/bin/bash
+# ==============================================================================
+# RedBoot Live-Build Auto Configuration Script
+# Target: Debian 12 (Bookworm) 64-bit Hybrid ISO
+# ==============================================================================
+set -e
+
+lb config noauto \
+    --distribution bookworm \
+    --architectures amd64 \
+    --linux-flavours amd64 \
+    --archive-areas "main contrib non-free non-free-firmware" \
+    --binary-images iso-hybrid \
+    --bootloader grub-efi \
+    --security true \
+    --updates true \
+    --memtest none \
+    --iso-application "RedBoot Security Assessment & Forensic Lab" \
+    --iso-preparer "RedBoot Academic Project" \
+    --iso-publisher "RedBoot Security Team" \
+    --iso-volume "REDBOOT_LIVE" \
+    --system live \
+    --bootappend-live "boot=live components quiet splash noautomount noswap ro toram" \
+    "${@}"

@@ -1,0 +1,62 @@
+# RedBoot Live System Packages
+# Core Base & System Utilities
+linux-image-amd64
+live-boot
+live-config
+live-config-systemd
+systemd-sysv
+sudo
+bash-completion
+curl
+wget
+git
+vim
+nano
+tmux
+htop
+pciutils
+usbutils
+iproute2
+iputils-ping
+net-tools
+dnsutils
+ca-certificates
+
+# Python Environment
+python3
+python3-pip
+python3-venv
+python3-yaml
+python3-click
+python3-jinja2
+python3-cryptography
+python3-requests
+
+# Network & Reconnaissance Utilities
+nmap
+tcpdump
+netcat-openbsd
+socat
+tshark
+traceroute
+whois
+
+# Forensics & Evidence Utilities
+sleuthkit
+testdisk
+ddrescue
+dc3dd
+hashdeep
+binwalk
+foremost
+scalpel
+smartmontools
+parted
+fdisk
+
+# Anonymity & Privacy (Lab Study)
+macchanger
+tor
+torsocks
+iptables
+nftables
