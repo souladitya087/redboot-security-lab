@@ -5,11 +5,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/progress-72%25%20completed-brightgreen" alt="Progress">
-  <img src="https://img.shields.io/badge/tests-57%20passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/phase-1%20foundation-blue" alt="Phase 1">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License">
   <img src="https://img.shields.io/badge/python-3.11%2B-yellow" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/status-active%20development-blue" alt="Active Development">
+  <img src="https://img.shields.io/badge/status-in%20development-orange" alt="In Development">
 </p>
 
 ---
@@ -104,17 +103,15 @@ python scripts/run_scenario.py --scenario lab/scenarios/basic_recon.yaml
 
 ## Development Phases
 
-| Phase | Description | Status | Progress |
-|---|---|---|---|
-| 1 | Architecture & repository foundation | 🟢 Complete | 100% |
-| 2 | Bootable environment | 🟢 Complete | 100% |
-| 3 | Assessment engine (recon, vuln, system, anonymity) | 🟢 Complete | 100% |
-| 4 | Forensic capabilities & evidence collection | 🟢 Complete | 100% |
-| 5 | Multi-format reporting engine (HTML, MD, JSON) | 🟢 Complete | 100% |
-| 6 | Controlled lab & experiments | ⬜ Planned | 0% |
-| 7 | Final-year documentation & academic evaluation | ⬜ Planned | 0% |
-
-> See [Project Status Report](docs/PROJECT_STATUS.md) for full metrics, test breakdown, and remaining roadmap.
+| Phase | Description | Status |
+|---|---|---|
+| 1 | Architecture & repository foundation | 🟢 In Progress |
+| 2 | Bootable environment | ⬜ Planned |
+| 3 | Assessment engine (recon, vuln, system) | ⬜ Planned |
+| 4 | Forensic capabilities | ⬜ Planned |
+| 5 | Reporting engine | ⬜ Planned |
+| 6 | Controlled lab & experiments | ⬜ Planned |
+| 7 | Final-year documentation & evaluation | ⬜ Planned |
 
 ---
 
