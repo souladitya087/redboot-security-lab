@@ -1,0 +1,74 @@
+# RedBoot Lab Environment — Docker Compose
+# Multi-container isolated laboratory targets for security assessment and forensics.
+# Academic business case: "System Hacking with Bootable Drives in Cyber Security"
+
+version: "3.8"
+
+networks:
+  redboot-lab-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.56.0/24
+          gateway: 192.168.56.1
+
+services:
+  web-target:
+    build:
+      context: ./web-target
+      dockerfile: Dockerfile
+    container_name: redboot-web-target
+    hostname: web-target
+    networks:
+      redboot-lab-net:
+        ipv4_address: 192.168.56.10
+    ports:
+      - "8080:80"
+      - "8443:443"
+    restart: unless-stopped
+
+  db-target:
+    build:
+      context: ./db-target
+      dockerfile: Dockerfile
+    container_name: redboot-db-target
+    hostname: db-target
+    networks:
+      redboot-lab-net:
+        ipv4_address: 192.168.56.20
+    ports:
+      - "33060:3306"
+      - "16379:6379"
+    restart: unless-stopped
+
+  ftp-ssh-target:
+    build:
+      context: ./ftp-ssh-target
+      dockerfile: Dockerfile
+    container_name: redboot-ftp-ssh-target
+    hostname: ftp-ssh-target
+    networks:
+      redboot-lab-net:
+        ipv4_address: 192.168.56.30
+    ports:
+      - "2121:21"
+      - "2222:22"
+      - "2323:23"
+    restart: unless-stopped
+
+  forensics-target:
+    build:
+      context: ./forensics-target
+      dockerfile: Dockerfile
+    container_name: redboot-forensics-target
+    hostname: forensics-target
+    networks:
+      redboot-lab-net:
+        ipv4_address: 192.168.56.40
+    volumes:
+      - forensics-data:/mnt/evidence
+    restart: unless-stopped
+
+volumes:
+  forensics-data:

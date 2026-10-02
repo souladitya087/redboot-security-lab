@@ -50,11 +50,17 @@ Desktop.ini
 # --- Evidence & Reports (generated, not committed) ---
 reporting/output/
 evidence_store/
+evidence_vault/
+output/
+test_output/
 
-# --- Boot artifacts ---
+# --- Boot artifacts & Disk Images ---
 boot/output/
 *.iso
 *.img
+*.dd
+*.raw
+*.bin
 
 # --- Logs ---
 *.log
