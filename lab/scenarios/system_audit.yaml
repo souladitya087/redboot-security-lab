@@ -1,0 +1,43 @@
+# RedBoot Lab Scenario: System Security & Posture Audit
+# Purpose: Configuration auditing, account checks, sensitive file permissions, SUID analysis.
+
+scenario:
+  id: "SCN-002"
+  name: "System Security & Hardening Audit"
+  description: "Audits target filesystem configurations, accounts, permissions, and GTFOBins vectors."
+  version: "1.0.0"
+
+session:
+  operator: "security-auditor"
+  lab_name: "RedBoot Target Assessment Lab"
+  case_id: "CASE-SYS-01"
+
+scope:
+  targets:
+    - "127.0.0.1"
+    - "192.168.56.0/24"
+  excluded:
+    - "192.168.56.1"
+
+stages:
+  - stage: "system_assessment"
+    enabled: true
+    parameters:
+      target_root: "/"
+      check_compliance: true
+      search_paths:
+        - "/bin"
+        - "/sbin"
+        - "/usr/bin"
+        - "/usr/sbin"
+
+evidence:
+  auto_collect: true
+  description: "System assessment configuration findings and compliance audit log"
+
+reporting:
+  enabled: true
+  formats:
+    - "html"
+    - "markdown"
+    - "json"

@@ -1,0 +1,50 @@
+# RedBoot Lab Scenario: Vulnerability Assessment & CVE Mapping
+# Purpose: Service identification, CVE matching, exploit availability detection, CVSS scoring.
+
+scenario:
+  id: "SCN-003"
+  name: "Vulnerability Assessment & CVE Analysis"
+  description: "Scans network services, grabs banners, and correlates findings against CVE definitions."
+  version: "1.0.0"
+
+session:
+  operator: "vuln-analyst"
+  lab_name: "RedBoot Vulnerability Lab"
+  case_id: "CASE-VULN-01"
+
+scope:
+  targets:
+    - "192.168.56.0/24"
+  excluded:
+    - "192.168.56.1"
+
+stages:
+  - stage: "reconnaissance"
+    enabled: true
+    parameters:
+      ports:
+        - 21
+        - 22
+        - 23
+        - 80
+        - 443
+        - 3306
+        - 6379
+        - 8080
+      timeout: 0.5
+  - stage: "vulnerability_assessment"
+    enabled: true
+    parameters:
+      calculate_cvss: true
+      flag_exploits: true
+
+evidence:
+  auto_collect: true
+  description: "Vulnerability assessment findings with CVSS breakdown"
+
+reporting:
+  enabled: true
+  formats:
+    - "html"
+    - "markdown"
+    - "json"

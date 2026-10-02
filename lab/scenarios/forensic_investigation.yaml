@@ -1,0 +1,42 @@
+# RedBoot Lab Scenario: Digital Forensics & File Carving Investigation
+# Purpose: Raw disk acquisition, file carving, timeline analysis, and log correlation.
+
+scenario:
+  id: "SCN-004"
+  name: "Digital Forensic Incident Investigation"
+  description: "Extracts disk image, carves deleted/embedded artifacts, correlates auth logs, and builds timeline."
+  version: "1.0.0"
+
+session:
+  operator: "forensic-examiner"
+  lab_name: "RedBoot Forensic Lab"
+  case_id: "CASE-FOR-01"
+
+scope:
+  targets:
+    - "127.0.0.1"
+    - "192.168.56.0/24"
+  excluded:
+    - "192.168.56.1"
+
+stages:
+  - stage: "forensics"
+    enabled: true
+    parameters:
+      carve_signatures:
+        - "png"
+        - "pdf"
+        - "zip"
+      generate_timeline: true
+      analyze_logs: true
+
+evidence:
+  auto_collect: true
+  description: "Forensic image acquisition log, carved artifacts, and MACB timeline CSV"
+
+reporting:
+  enabled: true
+  formats:
+    - "html"
+    - "markdown"
+    - "json"

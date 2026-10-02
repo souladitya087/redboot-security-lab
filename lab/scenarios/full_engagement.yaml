@@ -1,0 +1,67 @@
+# RedBoot Lab Scenario: Full Security Assessment & Forensic Engagement
+# Purpose: Comprehensive end-to-end security assessment across all platform modules.
+
+scenario:
+  id: "SCN-005"
+  name: "Comprehensive Assessment & Forensic Engagement"
+  description: "End-to-end reconnaissance, vulnerability assessment, system audit, forensics, and evidence preservation."
+  version: "1.0.0"
+
+session:
+  operator: "lead-assessor"
+  lab_name: "RedBoot Comprehensive Security Lab"
+  case_id: "CASE-FULL-01"
+
+scope:
+  targets:
+    - "127.0.0.1"
+    - "192.168.56.0/24"
+  excluded:
+    - "192.168.56.1"
+  description: "Authorized full engagement scope"
+
+stages:
+  - stage: "reconnaissance"
+    enabled: true
+    parameters:
+      ports:
+        - 21
+        - 22
+        - 23
+        - 80
+        - 443
+        - 3306
+        - 6379
+        - 8080
+      timeout: 0.5
+  - stage: "vulnerability_assessment"
+    enabled: true
+    parameters:
+      calculate_cvss: true
+      flag_exploits: true
+  - stage: "system_assessment"
+    enabled: true
+    parameters:
+      target_root: "/"
+      check_compliance: true
+  - stage: "anonymity"
+    enabled: true
+    parameters:
+      verify_swap: true
+      audit_dns_leak: true
+  - stage: "forensics"
+    enabled: true
+    parameters:
+      generate_timeline: true
+      analyze_logs: true
+
+evidence:
+  auto_collect: true
+  description: "Complete engagement artifacts with cryptographic chain of custody"
+
+reporting:
+  enabled: true
+  formats:
+    - "html"
+    - "markdown"
+    - "json"

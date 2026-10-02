@@ -1,0 +1,49 @@
+# RedBoot Lab Scenario: Basic Reconnaissance
+# Purpose: Network discovery, host probing, and port mapping within authorized lab scope.
+# Authorized isolated laboratory environment only.
+
+scenario:
+  id: "SCN-001"
+  name: "Basic Network Reconnaissance"
+  description: "Automated host discovery, port scanning, and banner grabbing against lab subnet."
+  version: "1.0.0"
+
+session:
+  operator: "analyst-01"
+  lab_name: "RedBoot Docker Lab Network"
+  case_id: "CASE-RECON-01"
+
+scope:
+  targets:
+    - "192.168.56.0/24"
+  excluded:
+    - "192.168.56.1"
+  description: "RedBoot isolated Docker bridge subnet"
+
+stages:
+  - stage: "reconnaissance"
+    enabled: true
+    parameters:
+      ports:
+        - 21
+        - 22
+        - 23
+        - 80
+        - 443
+        - 3306
+        - 6379
+        - 8080
+      timeout: 0.5
+      max_workers: 20
+      dns_lookup: false
+
+evidence:
+  auto_collect: true
+  description: "Raw network reconnaissance scan results"
+
+reporting:
+  enabled: true
+  formats:
+    - "html"
+    - "markdown"
+    - "json"
