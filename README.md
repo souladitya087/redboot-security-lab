@@ -8,11 +8,12 @@
   <a href="https://github.com/souladitya087/redboot-security-lab/actions/workflows/ci.yml">
     <img src="https://github.com/souladitya087/redboot-security-lab/actions/workflows/ci.yml/badge.svg" alt="CI Status">
   </a>
-  <img src="https://img.shields.io/badge/progress-72%25%20completed-brightgreen" alt="Progress">
-  <img src="https://img.shields.io/badge/tests-57%20passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/progress-100%25%20completed-brightgreen" alt="Progress">
+  <img src="https://img.shields.io/badge/tests-62%20passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version 1.0.0">
   <img src="https://img.shields.io/badge/python-3.11%2B-yellow" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License">
-  <img src="https://img.shields.io/badge/status-active%20development-blue" alt="Status">
+  <img src="https://img.shields.io/badge/status-production%20ready-brightgreen" alt="Status">
 </p>
 
 ---
@@ -38,14 +39,18 @@ RedBoot provides a self-contained, bootable Linux environment (Debian 12 Bookwor
 | **Digital Forensics** | Bit-for-bit raw disk imager, magic-byte file carver, MACB timeline generator, log correlation | 🟢 Complete |
 | **Evidence Collection** | Append-only cryptographic Chain-of-Custody ledger, SHA-256/512 vaulting, integrity verifier | 🟢 Complete |
 | **Reporting Engine** | Unified multi-format reporting (interactive HTML dashboard, Markdown, JSON) | 🟢 Complete |
-| **Lab Scenarios** | Docker-compose vulnerable target containers and scripted benchmark scenarios | ⬜ Planned |
-| **Academic Deliverables** | Final-year academic thesis report, evaluation data, and operator handbook | ⬜ Planned |
+| **Lab Scenarios & Docker** | Isolated Docker bridge (`192.168.56.0/24`), 4 target containers, 5 scripted scenarios | 🟢 Complete |
+| **Academic Deliverables** | Research thesis monograph, empirical evaluation data, operator handbook | 🟢 Complete |
 
 ---
 
 ## Academic Basis
 
 This project is developed under the business case *"System Hacking with Bootable Drives in Cyber Security"* and fulfills final-year academic requirements for demonstrating practical security assessment, live-boot penetration testing techniques, forensic integrity preservation, and chain-of-custody tracking in controlled laboratory environments.
+
+- **Academic Monograph:** [docs/academic/ACADEMIC_REPORT.md](docs/academic/ACADEMIC_REPORT.md)
+- **Empirical Evaluation Data:** [docs/academic/EVALUATION_RESULTS.md](docs/academic/EVALUATION_RESULTS.md)
+- **Operator Handbook & Lab Manual:** [docs/user-guide/USER_GUIDE.md](docs/user-guide/USER_GUIDE.md)
 
 ---
 
@@ -56,10 +61,12 @@ See the complete [Technical Architecture](docs/architecture/ARCHITECTURE.md) doc
 ```
 redboot-security-lab/
 ├── docs/                      # Documentation & academic deliverables
+│   ├── academic/              # Academic thesis and empirical benchmark results
+│   │   ├── ACADEMIC_REPORT.md    # Full academic dissertation
+│   │   └── EVALUATION_RESULTS.md # Latency, CVSS accuracy, carving, & ledger metrics
 │   ├── architecture/          # Technical Architecture documentation
-│   ├── user-guide/            # Operator handbook
-│   ├── academic/              # Academic dissertation and evaluation data
-│   └── PROJECT_STATUS.md      # Detailed progress and milestone tracking
+│   ├── user-guide/            # Operator handbook (USER_GUIDE.md)
+│   └── PROJECT_STATUS.md      # Detailed progress and milestone tracking (100% complete)
 ├── boot/                      # Live bootable environment
 │   ├── live-build/            # Debian 12 Bookworm live-build scripts and hooks
 │   ├── config/                # Boot configuration (sysctl hardening, read-only policies)
@@ -74,8 +81,11 @@ redboot-security-lab/
 │   └── evidence/              # Chain-of-Custody ledger, evidence vault, integrity verifier
 ├── reporting/                 # Unified reporting engine (HTML dashboard, Markdown, JSON)
 ├── lab/                       # Docker isolated lab environments & scenario definitions
-├── scripts/                   # ISO build automation (`build_iso.sh`) and scenario runners
-└── tests/                     # Test suite (57 unit tests passing across all modules)
+│   ├── docker/                # Multi-container isolated lab (web, db, ftp-ssh, forensics)
+│   └── scenarios/             # Scripted benchmark scenarios (YAML)
+├── scripts/                   # ISO build automation (`build_iso.sh`) and scenario runner
+├── redboot.py                 # Top-level unified CLI for all modules and scenarios
+└── tests/                     # Test suite (62 unit and integration tests passing)
 ```
 
 ---
@@ -87,6 +97,7 @@ redboot-security-lab/
 - **Python:** 3.11+ (Python 3.11, 3.12, 3.14 tested)
 - **Dependencies:** `pip install -r requirements.txt` (and `requirements-dev.txt` for development)
 - **Optional (for live ISO generation):** Debian/Ubuntu with `live-build` or Docker installed
+- **Optional (for isolated lab):** Docker and Docker Compose
 
 ### Installation & Test Verification
 
@@ -99,91 +110,87 @@ cd redboot-security-lab
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
-# Run the complete test suite (57 unit tests)
-python -m pytest tests/ -v
+# Run complete test suite (62 tests)
+pytest
 
-# Check code formatting and linting
-flake8 modules/ reporting/ scripts/ tests/ --max-line-length=120 --statistics
-black --check modules/ reporting/ scripts/ tests/
+# Verify code formatting and linting
+flake8 modules/ reporting/ scripts/ tests/ redboot.py --max-line-length=120
+black --check modules/ reporting/ scripts/ tests/ redboot.py
 ```
 
 ---
 
-## Module CLI Reference & Usage Examples
+## Unified RedBoot CLI (`redboot.py`)
 
-### 1. Scope-Enforced Reconnaissance
-Scans targets while strictly enforcing safety boundaries:
+RedBoot provides a top-level command-line tool connecting all platform engines:
+
 ```bash
-# Scan a single host
-python -m modules.reconnaissance.cli --target 192.168.56.10 --ports 21,22,80,443 -o output/recon.json
+# Check platform component health & readiness
+python redboot.py status
 
-# Scan an authorized subnet range
-python -m modules.reconnaissance.cli --target 192.168.56.0/24 -o output/recon_range.json
+# Run scope-enforced network reconnaissance
+python redboot.py recon scan -t 192.168.56.0/24 -p 21,22,80,443,3306,6379,8080 -o output/recon.json
+
+# Audit offline mounted target filesystem
+python redboot.py audit full --target /mnt/target -o output/audit.json
+
+# Scan findings for CVE vulnerabilities & CVSS scores
+python redboot.py vuln scan -i output/recon.json -o output/vulns.json
+
+# Ingest forensic artifact into tamper-evident vault
+python redboot.py evidence collect -f output/target.raw -d "Raw image" -c "operator"
+
+# Verify cryptographic ledger and vault integrity
+python redboot.py evidence verify --vault-dir output/evidence_vault/
+
+# Execute an automated scenario
+python redboot.py scenario -s lab/scenarios/basic_recon.yaml -o output/scn01/
+
+# Generate client-ready reports (HTML, Markdown, JSON)
+python redboot.py report generate -d output/scn01/ --case-id CASE-2026-001
 ```
 
-### 2. System Security & Compliance Audit
-Evaluates system configurations, duplicate UID 0 root accounts, sensitive file permissions (`/etc/shadow`), and GTFOBins SUID binaries:
-```bash
-# Audit live system or an offline mounted target drive
-python -m modules.system_assessment.cli --root-dir / --compliance -o output/system_audit.json
+---
 
-# Audit an offline forensic image mounted at /mnt/target
-python -m modules.system_assessment.cli --root-dir /mnt/target --compliance
+## Controlled Multi-Container Lab
+
+RedBoot includes a complete isolated Docker simulation environment (`192.168.56.0/24`):
+
+```bash
+# Start all 4 target containers
+cd lab/docker/
+docker compose up -d
+
+# Targets active:
+# - 192.168.56.10: Web (Apache 2.4.49 - CVE-2021-41773)
+# - 192.168.56.20: DB (MySQL 5.7 & Redis 6.0 - CVE-2022-0543)
+# - 192.168.56.30: Services (vsftpd 2.3.4 - CVE-2011-2523, OpenSSH 7.4p1, Telnet)
+# - 192.168.56.40: Forensics target (disk.raw seeded with deleted files)
+
+# Stop the lab
+docker compose down
 ```
 
-### 3. Vulnerability Assessment
-Matches discovered services and banners against the CVE database and computes CVSS scores:
+---
+
+## Automated Scenarios
+
+Execute reproducible scenarios defined in `lab/scenarios/`:
 ```bash
-python -m modules.vulnerability_assessment.cli --input-recon output/recon.json -o output/vuln.json
-```
+# 1. Basic Reconnaissance
+python redboot.py scenario -s lab/scenarios/basic_recon.yaml
 
-### 4. Anonymity & Anti-Forensics Verification
-Audits volatile RAM-only execution posture, generates MAC address spoofing plans, and creates DNS leak prevention firewall rules:
-```bash
-python -m modules.anonymity.cli --check-all --randomize-mac eth0 -o output/anonymity.json
-```
+# 2. System Security Audit
+python redboot.py scenario -s lab/scenarios/system_audit.yaml
 
-### 5. Digital Forensics (Acquisition, Carving, Timeline & Logs)
-```bash
-# Bit-for-bit raw disk acquisition with simultaneous SHA-256/MD5 hashing
-python -m modules.forensics.cli acquire --source /dev/sdb --output output/target_disk.dd --case CASE-001
+# 3. Vulnerability Assessment
+python redboot.py scenario -s lab/scenarios/vuln_scan.yaml
 
-# File carving by file signatures (PNG, JPG, PDF, ZIP, ELF, SQLite)
-python -m modules.forensics.cli carve --image output/target_disk.dd --output-dir output/carved/
+# 4. Forensic Investigation
+python redboot.py scenario -s lab/scenarios/forensic_investigation.yaml
 
-# Generate MACB chronological filesystem timeline
-python -m modules.forensics.cli timeline --target-dir /mnt/target --csv-output output/timeline.csv
-
-# Forensic log correlation (brute-force attacks, unauthorized sudo access)
-python -m modules.forensics.cli analyze-logs --log-file /var/log/auth.log
-```
-
-### 6. Evidence Collection & Cryptographic Chain of Custody
-```bash
-# Collect artifact into evidence vault and record in append-only custody ledger
-python -m modules.evidence.cli collect --file output/target_disk.dd --desc "Target disk image" --custodian "Analyst-1"
-
-# Verify custody ledger integrity and validate all file hashes against tampering
-python -m modules.evidence.cli verify --vault evidence_vault
-
-# List all archived evidence items
-python -m modules.evidence.cli list --vault evidence_vault
-```
-
-### 7. Multi-Format Report Generation
-Generates executive dashboards, Markdown deliverables, and JSON models from module findings:
-```bash
-# Generate HTML dashboard, Markdown, and JSON deliverables
-python -m reporting.cli --input-dir output/ --format all --case CASE-2026-001
-```
-
-### 8. Interactive Boot Menu & Live ISO Generation
-```bash
-# Launch interactive console menu (included in live boot image)
-bash boot/scripts/redboot-menu.sh
-
-# Build Debian 12 Bookworm live ISO (requires live-build or Docker)
-bash scripts/build_iso.sh
+# 5. Full End-to-End Engagement
+python redboot.py scenario -s lab/scenarios/full_engagement.yaml
 ```
 
 ---
@@ -197,8 +204,8 @@ bash scripts/build_iso.sh
 | **Phase 3** | Assessment engine (recon, system, vuln, anonymity) | 🟢 Complete | 100% |
 | **Phase 4** | Forensic capabilities & tamper-evident evidence collection | 🟢 Complete | 100% |
 | **Phase 5** | Multi-format reporting engine (HTML, Markdown, JSON) | 🟢 Complete | 100% |
-| **Phase 6** | Controlled lab & reproducible scenario runner | ⬜ Planned | 0% |
-| **Phase 7** | Final-year academic documentation & evaluation | ⬜ Planned | 0% |
+| **Phase 6** | Controlled lab & reproducible scenario runner | 🟢 Complete | 100% |
+| **Phase 7** | Final-year academic documentation & evaluation | 🟢 Complete | 100% |
 
 > Detailed milestone breakdowns and test metrics are tracked in [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md).
 
