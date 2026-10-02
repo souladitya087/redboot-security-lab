@@ -8,6 +8,7 @@ and triggers multi-format report generation.
 
 from __future__ import annotations
 
+import ipaddress
 import json
 import sys
 from datetime import datetime, timezone
@@ -73,9 +74,18 @@ class ScenarioRunner:
         scope_data = self.data.get("scope", {})
         targets = scope_data.get("targets", ["127.0.0.1"])
         excluded = scope_data.get("excluded", [])
+        networks: list[str] = []
+        hosts: list[str] = []
+        for t in targets:
+            try:
+                ipaddress.ip_network(t, strict=False)
+                networks.append(t)
+            except ValueError:
+                hosts.append(t)
+
         self.validator = ScopeValidator(
-            allowed_networks=[t for t in targets if "/" in t],
-            allowed_hosts=[t for t in targets if "/" not in t],
+            allowed_networks=networks,
+            allowed_hosts=hosts,
             excluded_addresses=excluded,
         )
 

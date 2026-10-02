@@ -97,6 +97,14 @@ class ScopeValidator:
                     )
                     return True
 
+            # Check if IP was specified directly in allowed_hosts
+            if str(addr) in self._hosts:
+                self._logger.info(
+                    f"Scope validated: host {target} is allowed",
+                    extra={"data": {"target": target}},
+                )
+                return True
+
             self._logger.warning(
                 f"SCOPE VIOLATION: {target} is not in any authorized network",
                 extra={"data": {"target": target, "reason": "not_in_scope"}},
