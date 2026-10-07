@@ -38,7 +38,7 @@ services:
       redboot-lab-net:
         ipv4_address: 192.168.56.20
     ports:
-      - "33060:3306"
+      - "33061:3306"
       - "16379:6379"
     restart: unless-stopped
 
